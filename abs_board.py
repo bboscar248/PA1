@@ -93,27 +93,3 @@ def set_board_up(stones_per_player = 4):
 
     # return these 4 functions to make them available to the main program
     return stones, select_st, move_st, draw_txt
-
-if __name__ == "__main__":
-    # Inicializar el tablero y obtener las funciones
-    stones, select_st, end, move_st, draw_txt = set_board_up()
-
-    # Dibujar el tablero inicial
-    draw_txt()
-
-    # Ejemplo de cómo interactuar con el tablero:
-    # Seleccionar una piedra en la posición (0, 0)
-    if select_st(0, 0):
-        print("Piedra seleccionada en (0, 0)")
-
-    # Mover la piedra seleccionada a la posición (1, 1)
-    stone_selected, current_player, game_end = move_st(1, 1)
-
-    # Dibujar el tablero después del movimiento
-    draw_txt(game_end)
-
-    # Verificar si el juego ha terminado
-    if game_end:
-        print("El juego ha terminado")
-    else:
-        print(f"Turno del jugador {current_player}")
