@@ -21,6 +21,9 @@ Stone = namedtuple('Stone', ('x', 'y', 'color'))
 def set_board_up(stones_per_player = 4):
     'Init stones and board, prepare functions to provide, act as their closure'
 
+        
+
+
     # init board and game data here
 
     def stones():
@@ -57,4 +60,3 @@ def set_board_up(stones_per_player = 4):
 
     # return these 4 functions to make them available to the main program
     return stones, select_st, move_st, draw_txt
-

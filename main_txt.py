@@ -42,12 +42,3 @@ while not end:
 
 # Wait for the user to look at the screen before ending the program.
 input('\nGame over.') 
-
-
-
-
-
-
-
-
-
