@@ -45,8 +45,7 @@ def set_board_up(stones_per_player = 4):
 
     def stones():
         "return iterable with the stones already played"
-        for item in played_stones:
-            return item
+        return iter(played_stones)
 
 
     # Llamamos esta función una vez que todas las piedras sean jugadas. Seleccionamos
@@ -151,7 +150,6 @@ def set_board_up(stones_per_player = 4):
 
             # Añadimos la piedra jugada por el jugador 
             played_stones.append(Stone(i, j, PLAYER_COLOR[curr_player]))
-            
 
             if total_stones < 2: 
                 # Vemos si alguno de los jugadores ha ganado o no
@@ -170,7 +168,24 @@ def set_board_up(stones_per_player = 4):
 
     def draw_txt(end = False):
         'Use ASCII characters to draw the board.'
-        pass
+        # Dibuja el tablero
+        for i in range(BSIZ):
+            row = []
+            for j in range(BSIZ):
+                if board[i][j] == NO_PLAYER:
+                    row.append('.')
+                elif board[i][j] == 'X':
+                    row.append('X')
+                elif board[i][j] == 'O':
+                    row.append('O')
+            print(' '.join(row))
+        
+        # Indica si el juego ha terminado
+        if end:
+            print("El juego ha terminado.")
+        else:
+            print(f"Turno del jugador {curr_player + 1}")
+
 
 
     # return these 4 functions to make them available to the main program
