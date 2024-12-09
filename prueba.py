@@ -62,9 +62,23 @@ def set_board_up(stones_per_player = 4):
         '''
         
         # Hacemos que la variable curr_player sea nonlocal
-        nonlocal curr_player
+        nonlocal curr_player, total_stones
 
-        pass
+        # Jugador 1 
+        if curr_player == 0: 
+            if board[i][j] == 'X': 
+                total_stones += 1
+                return True
+            
+            return False
+
+        # Jugador 2
+        elif curr_player == 1: 
+            if board[i][j] == 'O':
+                total_stones += 1
+                return True
+        
+            return False
 
 
     # Para comprobar si han hecho 3 en raya horizontalmente, verticalmente o diagonalmente
