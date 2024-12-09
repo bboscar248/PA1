@@ -73,22 +73,22 @@ def set_board_up(stones_per_player = 4):
 
         # Comprobar filas
         for i in range(BSIZ):
-            if all(board[i][j] == board[i][0] and board[i][j] != -1 for j in range(BSIZ)):
+            if all(board[i][j] == board[i][0] and board[i][j] != NO_PLAYER for j in range(BSIZ)):
                 return True
 
         # Comprobar columnas
         for j in range(BSIZ):
-            if all(board[i][j] == board[0][j] and board[i][j] != -1 for i in range(BSIZ)):
+            if all(board[i][j] == board[0][j] and board[i][j] != NO_PLAYER for i in range(BSIZ)):
                 return True
 
         # Comprobar diagonal principal
-        if all(board[i][i] == board[0][0] and board[i][i] != -1 for i in range(BSIZ)):
+        if all(board[i][i] == board[0][0] and board[i][i] != NO_PLAYER for i in range(BSIZ)):
             return True
 
         # Comprobar diagonal secundaria
-        if all(board[i][BSIZ - 1 - i] == board[0][BSIZ - 1] and board[i][BSIZ - 1 - i] != -1 for i in range(BSIZ)):
+        if all(board[i][BSIZ - 1 - i] == board[0][BSIZ - 1] and board[i][BSIZ - 1 - i] != NO_PLAYER for i in range(BSIZ)):
             return True
-
+        
         # Si ninguna de las condiciones anteriores fueron ciertas, quiere decir que el juego aún no ha acabado
         return False
 
@@ -129,16 +129,23 @@ def set_board_up(stones_per_player = 4):
             elif curr_player == 1: 
                 board[i][j] = 'O'
 
-        # Cambiamos de jugador
-        curr_player = 1 - curr_player
+            # Cambiamos de jugador
+            curr_player = 1 - curr_player
 
-        # Para saber si ha terminado el juego o no
-        end = end()  # Llamada a la función end() para comprobar si hay un ganador
+            # Restamos -1 a la variable 'total_stones' para saber las piedras aún disponibles
+            total_stones -= 1
 
-        # Tenemos que ver que si las piedras disponibles es 0, que stone_selected = False
-        if total_stones == 0: 
-            stone_selected = False
+            if total_stones < 2: 
+                # Vemos si alguno de los jugadores ha ganado o no
+                end = end()
 
+            # Tenemos que ver que si las piedras disponibles es 0, que stone_selected = False
+            if total_stones == 0: 
+
+                # Ya no hay más piedras que seleccionar
+                stone_selected = False
+
+        # Return 3 values: bool indicating whether a stone is already selected, current player, and boolean indicating the end of the game. 
         return stone_selected, curr_player, end
 
     
