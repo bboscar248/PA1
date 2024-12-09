@@ -135,6 +135,10 @@ def set_board_up(stones_per_player = 4):
             # Restamos -1 a la variable 'total_stones' para saber las piedras aún disponibles
             total_stones -= 1
 
+            # Añadimos la piedra jugada por el jugador 
+            played_stones.append(Stone(i, j, PLAYER_COLOR[curr_player]))
+            
+
             if total_stones < 2: 
                 # Vemos si alguno de los jugadores ha ganado o no
                 end = end()
