@@ -30,6 +30,7 @@ def set_board_up(stones_per_player = 4):
     played_stones = []
 
     # Para saber a qué jugador le toca // 0 --> Jugador 1 y 1 --> Jugador 2 
+    # También tenemos pensado la ficha 'X' para el jugador 1 y la ficha 'O' para el jugador 2
     curr_player = 0
 
     # Para saber si se ha seleccionado una piedra o no
@@ -93,8 +94,8 @@ def set_board_up(stones_per_player = 4):
 
         '''If valid square, move there selected stone and unselect it,
         then check for end of game, then select new stone for next
-        player unless all stones already played;
-        if square not valid, do nothing and keep selected stone.
+        player unless all stones already played; if square not valid, 
+        do nothing and keep selected stone.
         
         Return 3 values: bool indicating whether a stone is
         already selected, current player, and boolean indicating
@@ -106,26 +107,47 @@ def set_board_up(stones_per_player = 4):
         
         # stone_selected, curr_player, end = move_st(int(i), int(j))
         
-        # Nos aseguramos que las coordenadas seleccionados por el jugador estén dentro del rango del tablero
-        if not(0 <= i < BSIZ and 0 <= j < BSIZ): 
-            return True, curr_player, end
-        
-        # Nos aseguramos que la casilla escogida esté vacía
-        if board[i][j] != NO_PLAYER: 
-            return True, curr_player, end
+        # El número total de piedras a jugar
+        total_stones = stones_per_player * 2
 
-        # Si ninguno de los anteriores fueron ciertas, entonces, movemos la piedra del jugador a las coordenadas que haya concretado
-        if stone_selected: 
-            board[i][j] == #ficha de current_player
+        while stones_per_player > 0:
 
+            # Nos aseguramos que las coordenadas seleccionados por el jugador estén dentro del rango del tablero
+            if not(0 <= i < BSIZ and 0 <= j < BSIZ): 
+                return True, curr_player, end
             
+            # Nos aseguramos que la casilla escogida esté vacía
+            if board[i][j] != NO_PLAYER: 
+                return True, curr_player, end
 
-        
-        
+            # Si ninguno de los anteriores fueron ciertas, entonces, movemos la piedra del jugador a las coordenadas que haya concretado
+            if stone_selected:  
+
+                # Si se trata del jugador 1
+                if curr_player == 0: 
+                    board[i][j] = 'X'
+
+                # Si se trata del jugador 2
+                elif curr_player == 1: 
+                    board[i][j] = 'O'
+
+            # Deseleccionamos la piedra
+            stone_selected = False        
+
+            # Cambiamos de jugador
+            curr_player = 1 - curr_player
+
+            # Por cada jugada eliminamos el nombre total de piedras disponibles
+            total_stones -= 1
+
+        return stone_selected, curr_player, end
+
+    
 
     def draw_txt(end = False):
         'Use ASCII characters to draw the board.'
         pass
+
 
     # return these 4 functions to make them available to the main program
     return stones, select_st, move_st, draw_txt
