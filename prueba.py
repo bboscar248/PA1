@@ -38,6 +38,9 @@ def set_board_up(stones_per_player = 4):
 
     # Para saber si el juego ha terminado o no
     end = False
+
+    # El número total de piedras disponibles
+    total_stones = stones_per_player * 2
     
 
     def stones():
@@ -102,43 +105,39 @@ def set_board_up(stones_per_player = 4):
         the end of the game.
         '''
 
-        # Hacemos que las variables curr_player, stone_selected y end sean nonlocal
-        nonlocal curr_player, stone_selected, end
+        # Hacemos que las variables curr_player, stone_selected, end y total_stones sean nonlocal
+        nonlocal curr_player, stone_selected, end, total_stones
         
         # stone_selected, curr_player, end = move_st(int(i), int(j))
+
+        # Nos aseguramos que las coordenadas seleccionados por el jugador estén dentro del rango del tablero
+        if not(0 <= i < BSIZ and 0 <= j < BSIZ): 
+            return True, curr_player, end
         
-        # El número total de piedras a jugar
-        total_stones = stones_per_player * 2
+        # Nos aseguramos que la casilla escogida esté vacía
+        if board[i][j] != NO_PLAYER: 
+            return True, curr_player, end
 
-        while stones_per_player > 0:
+        # Si ninguno de los anteriores fueron ciertas, entonces, movemos la piedra del jugador a las coordenadas que haya concretado
+        if stone_selected:  
 
-            # Nos aseguramos que las coordenadas seleccionados por el jugador estén dentro del rango del tablero
-            if not(0 <= i < BSIZ and 0 <= j < BSIZ): 
-                return True, curr_player, end
-            
-            # Nos aseguramos que la casilla escogida esté vacía
-            if board[i][j] != NO_PLAYER: 
-                return True, curr_player, end
+            # Si se trata del jugador 1
+            if curr_player == 0: 
+                board[i][j] = 'X'
 
-            # Si ninguno de los anteriores fueron ciertas, entonces, movemos la piedra del jugador a las coordenadas que haya concretado
-            if stone_selected:  
+            # Si se trata del jugador 2
+            elif curr_player == 1: 
+                board[i][j] = 'O'
 
-                # Si se trata del jugador 1
-                if curr_player == 0: 
-                    board[i][j] = 'X'
+        # Cambiamos de jugador
+        curr_player = 1 - curr_player
 
-                # Si se trata del jugador 2
-                elif curr_player == 1: 
-                    board[i][j] = 'O'
+        # Para saber si ha terminado el juego o no
+        end = end()  # Llamada a la función end() para comprobar si hay un ganador
 
-            # Deseleccionamos la piedra
-            stone_selected = False        
-
-            # Cambiamos de jugador
-            curr_player = 1 - curr_player
-
-            # Por cada jugada eliminamos el nombre total de piedras disponibles
-            total_stones -= 1
+        # Tenemos que ver que si las piedras disponibles es 0, que stone_selected = False
+        if total_stones == 0: 
+            stone_selected = False
 
         return stone_selected, curr_player, end
 
