@@ -28,6 +28,15 @@ def set_board_up(stones_per_player = 4):
 
     # Lista para guardar las piedras jugadas
     played_stones = []
+
+    # Para saber a qué jugador le toca // 0 --> Jugador 1 y 1 --> Jugador 2 
+    curr_player = 0
+
+    # Para saber si se ha seleccionado una piedra o no
+    stone_selected = True
+
+    # Para saber si el juego ha terminado o no
+    end = False
     
 
     def stones():
@@ -35,50 +44,84 @@ def set_board_up(stones_per_player = 4):
         for item in played_stones:
             return item
 
+
+    # Llamamos esta función una vez que todas las piedras sean jugadas. Seleccionamos
+    # la piedra que queremos mover y retornamos un boolean si ha colocado la piedra
+    # en una casilla vacía
     def select_st(i, j):
+
         '''
         Select stone that current player intends to move. 
         Player must select a stone of his own.
         To be called only after all stones played.
         Report success by returning a boolean;
         '''
+        
+        # Hacemos que la variable curr_player sea nonlocal
+        nonlocal curr_player
+
         pass
 
 
+    # Para comprobar si han hecho 3 en raya horizontalmente, verticalmente o diagonalmente
     def end():
         'Test whether there are 3 aligned stones'
 
         # Comprobar filas
         for i in range(BSIZ):
-            if all(board[i][j] == board[i][0] and board[i][j] != None for j in range(BSIZ)):
+            if all(board[i][j] == board[i][0] and board[i][j] != -1 for j in range(BSIZ)):
                 return True
 
         # Comprobar columnas
         for j in range(BSIZ):
-            if all(board[i][j] == board[0][j] and board[i][j] != None for i in range(BSIZ)):
+            if all(board[i][j] == board[0][j] and board[i][j] != -1 for i in range(BSIZ)):
                 return True
 
         # Comprobar diagonal principal
-        if all(board[i][i] == board[0][0] and board[i][i] != None for i in range(BSIZ)):
+        if all(board[i][i] == board[0][0] and board[i][i] != -1 for i in range(BSIZ)):
             return True
 
         # Comprobar diagonal secundaria
-        if all(board[i][BSIZ - 1 - i] == board[0][BSIZ - 1] and board[i][BSIZ - 1 - i] != None for i in range(BSIZ)):
+        if all(board[i][BSIZ - 1 - i] == board[0][BSIZ - 1] and board[i][BSIZ - 1 - i] != -1 for i in range(BSIZ)):
             return True
 
+        # Si ninguna de las condiciones anteriores fueron ciertas, quiere decir que el juego aún no ha acabado
         return False
 
 
     def move_st(i, j):
+
         '''If valid square, move there selected stone and unselect it,
         then check for end of game, then select new stone for next
         player unless all stones already played;
         if square not valid, do nothing and keep selected stone.
+        
         Return 3 values: bool indicating whether a stone is
         already selected, current player, and boolean indicating
         the end of the game.
         '''
-        pass
+
+        # Hacemos que las variables curr_player, stone_selected y end sean nonlocal
+        nonlocal curr_player, stone_selected, end
+        
+        # stone_selected, curr_player, end = move_st(int(i), int(j))
+        
+        # Nos aseguramos que las coordenadas seleccionados por el jugador estén dentro del rango del tablero
+        if not(0 <= i < BSIZ and 0 <= j < BSIZ): 
+            return True, curr_player, end
+        
+        # Nos aseguramos que la casilla escogida esté vacía
+        if board[i][j] != NO_PLAYER: 
+            return True, curr_player, end
+
+        # Si ninguno de los anteriores fueron ciertas, entonces, movemos la piedra del jugador a las coordenadas que haya concretado
+        if stone_selected: 
+            board[i][j] == #ficha de current_player
+
+            
+
+        
+        
 
     def draw_txt(end = False):
         'Use ASCII characters to draw the board.'
