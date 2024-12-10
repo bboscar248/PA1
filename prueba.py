@@ -41,11 +41,14 @@ def set_board_up(stones_per_player = 4):
 
     # El número total de piedras disponibles
     total_stones = stones_per_player * 2
+
+    # Coordenadas de la piedra seleccionada
+    stone_itself = (None, None)
     
 
     def stones():
         "return iterable with the stones already played"
-        return iter(played_stones)
+        return played_stones
 
 
     # Llamamos esta función una vez que todas las piedras sean jugadas. Seleccionamos
@@ -61,11 +64,12 @@ def set_board_up(stones_per_player = 4):
         '''
         
         # Hacemos que la variable curr_player sea nonlocal
-        nonlocal curr_player, total_stones
+        nonlocal curr_player, total_stones, stone_itself
 
         # Jugador 1 
         if curr_player == 0: 
             if board[i][j] == 'X': 
+                stone_itself = (i, j)
                 total_stones += 1
                 return True
             
@@ -74,6 +78,7 @@ def set_board_up(stones_per_player = 4):
         # Jugador 2
         elif curr_player == 1: 
             if board[i][j] == 'O':
+                stone_itself = (i, j)
                 total_stones += 1
                 return True
         
@@ -105,7 +110,7 @@ def set_board_up(stones_per_player = 4):
         # Si ninguna de las condiciones anteriores fueron ciertas, quiere decir que el juego aún no ha acabado
         return False
 
-
+    # Mover las piedras
     def move_st(i, j):
 
         '''If valid square, move there selected stone and unselect it,
@@ -119,20 +124,25 @@ def set_board_up(stones_per_player = 4):
         '''
 
         # Hacemos que las variables curr_player, stone_selected, end y total_stones sean nonlocal
-        nonlocal curr_player, stone_selected, end, total_stones
-        
-        # stone_selected, curr_player, end = move_st(int(i), int(j))
+        nonlocal curr_player, stone_selected, end, total_stones, stone_itself
+
+        # Obtenemos las coordenadas de la piedra seleccionada
+        x = stone_itself[0]
+        y = stone_itself[1]
 
         # Nos aseguramos que las coordenadas seleccionados por el jugador estén dentro del rango del tablero
         if not(0 <= i < BSIZ and 0 <= j < BSIZ): 
             return True, curr_player, end
         
         # Nos aseguramos que la casilla escogida esté vacía
-        if board[i][j] != NO_PLAYER: 
+        if board[i][j] == NO_PLAYER: 
             return True, curr_player, end
 
         # Si ninguno de los anteriores fueron ciertas, entonces, movemos la piedra del jugador a las coordenadas que haya concretado
         if stone_selected:  
+
+            # Eliminamos la piedra seleccionada 
+            played_stones.remove(Stone(x, y, PLAYER_COLOR[curr_player]))
 
             # Si se trata del jugador 1
             if curr_player == 0: 
@@ -151,10 +161,6 @@ def set_board_up(stones_per_player = 4):
             # Añadimos la piedra jugada por el jugador 
             played_stones.append(Stone(i, j, PLAYER_COLOR[curr_player]))
 
-            if total_stones < 2: 
-                # Vemos si alguno de los jugadores ha ganado o no
-                end = end()
-
             # Tenemos que ver que si las piedras disponibles es 0, que stone_selected = False
             if total_stones == 0: 
 
@@ -168,23 +174,19 @@ def set_board_up(stones_per_player = 4):
 
     def draw_txt(end = False):
         'Use ASCII characters to draw the board.'
-        # Dibuja el tablero
-        for i in range(BSIZ):
-            row = []
-            for j in range(BSIZ):
-                if board[i][j] == NO_PLAYER:
-                    row.append('.')
-                elif board[i][j] == 'X':
-                    row.append('X')
-                elif board[i][j] == 'O':
-                    row.append('O')
-            print(' '.join(row))
-        
-        # Indica si el juego ha terminado
-        if end:
-            print("El juego ha terminado.")
-        else:
-            print(f"Turno del jugador {curr_player + 1}")
+
+        for row in range(BSIZ): 
+            for col in range(BSIZ): 
+                if col < BSIZ - 1: 
+                    print("", board[row][col], "|", end="")
+
+                else: 
+                    print("", board[row][col], end="")
+
+                print()
+
+                if row < BSIZ - 1: 
+                    print("-" * (BSIZ * 4 -1))
 
 
 

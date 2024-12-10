@@ -1,4 +1,15 @@
-# Import constants (assuming constants.py is in the same directory)
+"""
+Author: Jose L Balcazar, ORCID 0000-0003-4248-4528 
+Copyleft: MIT License (https://en.wikipedia.org/wiki/MIT_License)
+
+Headers for functions in abstract board for simple tic-tac-toe-like games, 2021.
+Intended for Grau en Intel-ligencia Artificial, Programacio i Algorismes 1.
+I would prefer to do everything in terms of object-oriented programming though.
+"""
+
+# Import: 
+# color GRAY; PLAYER_COLOR, NO_PLAYER
+# board dimension BSIZ
 from constants import PLAYER_COLOR, BSIZ, NO_PLAYER, GRAY
 
 # Data structure for stones
@@ -7,133 +18,177 @@ from collections import namedtuple
 Stone = namedtuple('Stone', ('x', 'y', 'color'))
 
 
-def set_board_up(stones_per_player=4):
-    """
-    Initializes the board and game state.
+def set_board_up(stones_per_player = 4):
+    'Init stones and board, prepare functions to provide, act as their closure'
 
-    Args:
-        stones_per_player (int, optional): The number of stones each player starts with. Defaults to 4.
+    # init board and game data here
 
-    Returns:
-        tuple: A tuple containing functions for accessing and manipulating the game state.
-    """
+    # Inicializamos la tabla BSIZxBSIZ con las casillas vacías
+    board = [[" "]*BSIZ for _ in range(BSIZ)]
 
-    # Initialize board with empty cells
-    board = [[NO_PLAYER for _ in range(BSIZ)] for _ in range(BSIZ)]
-
-    # List of played stones
+    # Lista para guardar las piedras jugadas
     played_stones = []
 
-    # Current player (0 or 1)
-    current_player = 0
+    # Para saber a qué jugador le toca // 0 --> Jugador 1 y 1 --> Jugador 2 
+    # También tenemos pensado la ficha 'X' para el jugador 1 y la ficha 'O' para el jugador 2
+    curr_player = 0
 
-    # Flag for selected stone
-    stone_selected = False
+    # Para saber si se ha seleccionado una piedra o no
+    stone_selected = True
 
-    # Flag for game end
+    # Para saber si el juego ha terminado o no
     end = False
 
-    # Total number of stones remaining
+    # El número total de piedras disponibles
     total_stones = stones_per_player * 2
 
+    # Coordenadas de la piedra seleccionada
+    stone_itself = (None, None)
+    
+
     def stones():
-        """
-        Returns an iterable of the played stones.
-        """
-        return iter(played_stones)
+        "return iterable with the stones already played"
+        return played_stones
 
-    def select_stone(i, j):
-        """
-        Selects a stone for the current player if it's their own stone.
 
-        Args:
-            i (int): Row index of the stone.
-            j (int): Column index of the stone.
+    # Llamamos esta función una vez que todas las piedras sean jugadas. Seleccionamos
+    # la piedra que queremos mover y retornamos un boolean si ha colocado la piedra
+    # en una casilla vacía
+    def select_st(i, j):
 
-        Returns:
-            bool: True if a stone was selected, False otherwise.
-        """
-        nonlocal stone_selected
-        if board[i][j] == PLAYER_COLOR[current_player]:
-            stone_selected = (i, j)
-            return True
-        return False
+        '''
+        Select stone that current player intends to move. 
+        Player must select a stone of his own.
+        To be called only after all stones played.
+        Report success by returning a boolean;
+        '''
+        
+        # Hacemos que la variable curr_player sea nonlocal
+        nonlocal curr_player, total_stones, stone_itself
 
+        # Jugador 1 
+        if curr_player == 0: 
+            if board[i][j] == 'X': 
+                stone_itself = (i, j)
+                total_stones += 1
+                return True
+            
+            return False
+
+        # Jugador 2
+        elif curr_player == 1: 
+            if board[i][j] == 'O':
+                stone_itself = (i, j)
+                total_stones += 1
+                return True
+        
+            return False
+
+
+    # Para comprobar si han hecho 3 en raya horizontalmente, verticalmente o diagonalmente
     def end():
-        """
-        Checks if there are three aligned stones on the board.
+        'Test whether there are 3 aligned stones'
 
-        Returns:
-            bool: True if the game has ended, False otherwise.
-        """
-        # Check rows, columns, and diagonals for a win
+        # Comprobar filas
         for i in range(BSIZ):
-            if all(board[i][j] == board[i][0] and board[i][j] != NO_PLAYER for j in range(BSIZ)) or \
-               all(board[j][i] == board[0][i] and board[j][i] != NO_PLAYER for j in range(BSIZ)):
+            if all(board[i][j] == board[i][0] and board[i][j] != " " for j in range(BSIZ)):
                 return True
-        for i in range(BSIZ):
-            if all(board[i][i] == board[0][0] and board[i][i] != NO_PLAYER for i in range(BSIZ)) or \
-               all(board[i][BSIZ - 1 - i] == board[0][BSIZ - 1] and board[i][BSIZ - 1 - i] != NO_PLAYER for i in range(BSIZ)):
+
+        # Comprobar columnas
+        for j in range(BSIZ):
+            if all(board[i][j] == board[0][j] and board[i][j] != " " for i in range(BSIZ)):
                 return True
+
+        # Comprobar diagonal principal
+        if all(board[i][i] == board[0][0] and board[i][i] != " " for i in range(BSIZ)):
+            return True
+
+        # Comprobar diagonal secundaria
+        if all(board[i][BSIZ - 1 - i] == board[0][BSIZ - 1] and board[i][BSIZ - 1 - i] != " " for i in range(BSIZ)):
+            return True
+        
+        # Si ninguna de las condiciones anteriores fueron ciertas, quiere decir que el juego aún no ha acabado
         return False
 
-    def move_stone(i, j):
-        """
-        Moves a selected stone or places a new stone if the move is valid.
+    # Mover las piedras
+    def move_st(i, j):
 
-        Args:
-            i (int): Row index of the destination square.
-            j (int): Column index of the destination square.
+        '''If valid square, move there selected stone and unselect it,
+        then check for end of game, then select new stone for next
+        player unless all stones already played; if square not valid, 
+        do nothing and keep selected stone.
+        
+        Return 3 values: bool indicating whether a stone is
+        already selected, current player, and boolean indicating
+        the end of the game.
+        '''
 
-        Returns:
-            tuple: A tuple containing the stone selection state, current player, and game end state.
-        """
-        nonlocal stone_selected, current_player, end, total_stones
+        # Hacemos que las variables curr_player, stone_selected, end y total_stones sean nonlocal
+        nonlocal curr_player, stone_selected, end, total_stones, stone_itself
 
-        # Check for valid coordinates
-        if not (0 <= i < BSIZ and 0 <= j < BSIZ):
-            return stone_selected, current_player, end
+        # Obtenemos las coordenadas de la piedra seleccionada
+        x = stone_itself[0]
+        y = stone_itself[1]
 
-        # Place a new stone
-        if total_stones > 0:
-            if board[i][j] == NO_PLAYER:
-                board[i][j] = PLAYER_COLOR[current_player]
-                played_stones.append(Stone(i, j, PLAYER_COLOR[current_player]))
-                total_stones -= 1
-                current_player = 1 - current_player
-                end = end()
-                return stone_selected, current_player, end
+        # Nos aseguramos que las coordenadas seleccionados por el jugador estén dentro del rango del tablero
+        if not(0 <= i < BSIZ and 0 <= j < BSIZ): 
+            return True, curr_player, end
+        
+        # Nos aseguramos que la casilla escogida esté vacía
+        if board[i][j] == " ": 
+            return True, curr_player, end
 
-        # Move existing stone
-        if stone_selected:
-            old_i, old_j = stone_selected
-            if board[i][j] == NO_PLAYER:
-                board[old_i][old_j] = NO_PLAYER
-                board[i][j] = PLAYER_COLOR[current_player]
-                played_stones.append(Stone(i, j, PLAYER_COLOR[current_player]))
-                current_player = 1 - current_player
-                end = end()
+        # Si ninguno de los anteriores fueron ciertas, entonces, movemos la piedra del jugador a las coordenadas que haya concretado
+        if stone_selected:  
+
+            if x != None and y != None: 
+
+                # Eliminamos la piedra seleccionada 
+                played_stones.remove(Stone(x, y, PLAYER_COLOR[curr_player]))
+
+            # Si se trata del jugador 1
+            if curr_player == 0: 
+                board[i][j] = 'X'
+
+            # Si se trata del jugador 2
+            elif curr_player == 1: 
+                board[i][j] = 'O'
+
+            # Cambiamos de jugador
+            curr_player = 1 - curr_player
+
+            # Restamos -1 a la variable 'total_stones' para saber las piedras aún disponibles
+            total_stones -= 1
+
+            # Añadimos la piedra jugada por el jugador 
+            played_stones.append(Stone(i, j, PLAYER_COLOR[curr_player]))
+
+            # Tenemos que ver que si las piedras disponibles es 0, que stone_selected = False
+            if total_stones == 0: 
+
+                # Ya no hay más piedras que seleccionar
                 stone_selected = False
-                return stone_selected, current_player, end
 
-        # Select stone for move
-        if select_stone(i, j):
-            return stone_selected, current_player, end
+        # Return 3 values: bool indicating whether a stone is already selected, current player, and boolean indicating the end of the game. 
+        return stone_selected, curr_player, end()
 
-        return stone_selected, current_player, end
+    
 
-    def draw_txt():
-        """
-        Draws the board using ASCII characters.
-        """
-        for row in board:
-            print(' '.join('X' if cell == 'X' else 'O' if cell == 'O' else '.' for cell in row))
-        if end:
-            print("El juego ha terminado.")
-        else:
-            print(f"Turno del jugador {current_player + 1}")
+    def draw_txt(end = False):
+        'Use ASCII characters to draw the board.'
 
-        return draw_txt
+        for row in range(BSIZ): 
+            for col in range(BSIZ): 
+                if col < BSIZ - 1: 
+                    print("", board[row][col], "|", end="")
 
-    # Return functions
-    return stones, select_stone, move_stone, draw_txt
+                else: 
+                    print("", board[row][col], end="")
+
+            print()
+
+            if row < BSIZ - 1: 
+                print("-" * (BSIZ * 4 -1))
+
+    # return these 4 functions to make them available to the main program
+    return stones, select_st, move_st, draw_txt
