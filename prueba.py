@@ -24,7 +24,7 @@ def set_board_up(stones_per_player = 4):
     # init board and game data here
 
     # Inicializamos la tabla BSIZxBSIZ con las casillas vacías
-    board = [[NO_PLAYER]*BSIZ for _ in range(BSIZ)]
+    board = [[" "]*BSIZ for _ in range(BSIZ)]
 
     # Lista para guardar las piedras jugadas
     played_stones = []
@@ -91,20 +91,20 @@ def set_board_up(stones_per_player = 4):
 
         # Comprobar filas
         for i in range(BSIZ):
-            if all(board[i][j] == board[i][0] and board[i][j] != NO_PLAYER for j in range(BSIZ)):
+            if all(board[i][j] == board[i][0] and board[i][j] != " " for j in range(BSIZ)):
                 return True
 
         # Comprobar columnas
         for j in range(BSIZ):
-            if all(board[i][j] == board[0][j] and board[i][j] != NO_PLAYER for i in range(BSIZ)):
+            if all(board[i][j] == board[0][j] and board[i][j] != " " for i in range(BSIZ)):
                 return True
 
         # Comprobar diagonal principal
-        if all(board[i][i] == board[0][0] and board[i][i] != NO_PLAYER for i in range(BSIZ)):
+        if all(board[i][i] == board[0][0] and board[i][i] != " " for i in range(BSIZ)):
             return True
 
         # Comprobar diagonal secundaria
-        if all(board[i][BSIZ - 1 - i] == board[0][BSIZ - 1] and board[i][BSIZ - 1 - i] != NO_PLAYER for i in range(BSIZ)):
+        if all(board[i][BSIZ - 1 - i] == board[0][BSIZ - 1] and board[i][BSIZ - 1 - i] != " " for i in range(BSIZ)):
             return True
         
         # Si ninguna de las condiciones anteriores fueron ciertas, quiere decir que el juego aún no ha acabado
@@ -135,14 +135,16 @@ def set_board_up(stones_per_player = 4):
             return True, curr_player, end
         
         # Nos aseguramos que la casilla escogida esté vacía
-        if board[i][j] == NO_PLAYER: 
+        if board[i][j] == " ": 
             return True, curr_player, end
 
         # Si ninguno de los anteriores fueron ciertas, entonces, movemos la piedra del jugador a las coordenadas que haya concretado
         if stone_selected:  
 
-            # Eliminamos la piedra seleccionada 
-            played_stones.remove(Stone(x, y, PLAYER_COLOR[curr_player]))
+            if x != None and y != None: 
+
+                # Eliminamos la piedra seleccionada 
+                played_stones.remove(Stone(x, y, PLAYER_COLOR[curr_player]))
 
             # Si se trata del jugador 1
             if curr_player == 0: 
@@ -168,7 +170,7 @@ def set_board_up(stones_per_player = 4):
                 stone_selected = False
 
         # Return 3 values: bool indicating whether a stone is already selected, current player, and boolean indicating the end of the game. 
-        return stone_selected, curr_player, end
+        return stone_selected, curr_player, end()
 
     
 
@@ -183,12 +185,10 @@ def set_board_up(stones_per_player = 4):
                 else: 
                     print("", board[row][col], end="")
 
-                print()
+            print()
 
-                if row < BSIZ - 1: 
-                    print("-" * (BSIZ * 4 -1))
-
-
+            if row < BSIZ - 1: 
+                print("-" * (BSIZ * 4 -1))
 
     # return these 4 functions to make them available to the main program
     return stones, select_st, move_st, draw_txt

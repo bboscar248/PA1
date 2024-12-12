@@ -83,6 +83,8 @@ def set_board_up(stones_per_player = 4):
                 return True
         
             return False
+        
+        return False
 
 
     # Para comprobar si han hecho 3 en raya horizontalmente, verticalmente o diagonalmente
@@ -132,18 +134,19 @@ def set_board_up(stones_per_player = 4):
 
         # Nos aseguramos que las coordenadas seleccionados por el jugador estén dentro del rango del tablero
         if not(0 <= i < BSIZ and 0 <= j < BSIZ): 
-            return True, curr_player, end
+            return True, curr_player, end()
         
         # Nos aseguramos que la casilla escogida esté vacía
         if board[i][j] == " ": 
-            return True, curr_player, end
+            return True, curr_player, end()
 
         # Si ninguno de los anteriores fueron ciertas, entonces, movemos la piedra del jugador a las coordenadas que haya concretado
         if stone_selected:  
 
+            # Vemos si ha seleccionado alguna piedra o no en la función select_st()
             if x != None and y != None: 
 
-                # Eliminamos la piedra seleccionada 
+                # Eliminamos la piedra seleccionada de la lista played_stones
                 played_stones.remove(Stone(x, y, PLAYER_COLOR[curr_player]))
 
             # Si se trata del jugador 1
@@ -154,14 +157,14 @@ def set_board_up(stones_per_player = 4):
             elif curr_player == 1: 
                 board[i][j] = 'O'
 
+            # Añadimos la piedra jugada por el jugador 
+            played_stones.append(Stone(i, j, PLAYER_COLOR[curr_player]))
+
             # Cambiamos de jugador
             curr_player = 1 - curr_player
 
             # Restamos -1 a la variable 'total_stones' para saber las piedras aún disponibles
             total_stones -= 1
-
-            # Añadimos la piedra jugada por el jugador 
-            played_stones.append(Stone(i, j, PLAYER_COLOR[curr_player]))
 
             # Tenemos que ver que si las piedras disponibles es 0, que stone_selected = False
             if total_stones == 0: 
