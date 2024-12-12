@@ -148,10 +148,9 @@ def set_board_up(stones_per_player = 4):
             if x != None and y != None: 
 
                 # Eliminamos la piedra seleccionada de la lista played_stones
-                print("Antes de eliminar", played_stones)
                 played_stones.remove(Stone(x, y, PLAYER_COLOR[curr_player]))
-                print("Después de eliminar", played_stones)
-                
+
+                board[x][y] = " "  
 
             # Si se trata del jugador 1
             if curr_player == 0: 
@@ -162,9 +161,7 @@ def set_board_up(stones_per_player = 4):
                 board[i][j] = 'O'
 
             # Añadimos la piedra jugada por el jugador 
-            print("Antes de añadir", played_stones)
             played_stones.append(Stone(i, j, PLAYER_COLOR[curr_player]))
-            print("Después de añadir", played_stones)
 
             # Cambiamos de jugador
             curr_player = 1 - curr_player
