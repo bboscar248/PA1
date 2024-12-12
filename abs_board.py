@@ -64,27 +64,28 @@ def set_board_up(stones_per_player = 4):
         '''
         
         # Hacemos que la variable curr_player sea nonlocal
-        nonlocal curr_player, total_stones, stone_itself
+        nonlocal curr_player, total_stones, stone_itself, stone_selected
 
         # Jugador 1 
-        if curr_player == 0: 
+        if curr_player == 0 and 0 <= i < BSIZ and 0 <= j < BSIZ: 
             if board[i][j] == 'X': 
                 stone_itself = (i, j)
                 total_stones += 1
+                stone_selected = True
                 return True
             
             return False
 
         # Jugador 2
-        elif curr_player == 1: 
+        elif curr_player == 1 and 0 <= i < BSIZ and 0 <= j < BSIZ: 
             if board[i][j] == 'O':
                 stone_itself = (i, j)
                 total_stones += 1
+                stone_selected = True
+
                 return True
         
             return False
-        
-        return False
 
 
     # Para comprobar si han hecho 3 en raya horizontalmente, verticalmente o diagonalmente
@@ -137,7 +138,7 @@ def set_board_up(stones_per_player = 4):
             return True, curr_player, end()
         
         # Nos aseguramos que la casilla escogida esté vacía
-        if board[i][j] == " ": 
+        if board[i][j] != " ": 
             return True, curr_player, end()
 
         # Si ninguno de los anteriores fueron ciertas, entonces, movemos la piedra del jugador a las coordenadas que haya concretado
@@ -147,7 +148,10 @@ def set_board_up(stones_per_player = 4):
             if x != None and y != None: 
 
                 # Eliminamos la piedra seleccionada de la lista played_stones
+                print("Antes de eliminar", played_stones)
                 played_stones.remove(Stone(x, y, PLAYER_COLOR[curr_player]))
+                print("Después de eliminar", played_stones)
+                
 
             # Si se trata del jugador 1
             if curr_player == 0: 
@@ -158,7 +162,9 @@ def set_board_up(stones_per_player = 4):
                 board[i][j] = 'O'
 
             # Añadimos la piedra jugada por el jugador 
+            print("Antes de añadir", played_stones)
             played_stones.append(Stone(i, j, PLAYER_COLOR[curr_player]))
+            print("Después de añadir", played_stones)
 
             # Cambiamos de jugador
             curr_player = 1 - curr_player
@@ -172,9 +178,9 @@ def set_board_up(stones_per_player = 4):
                 # Ya no hay más piedras que seleccionar
                 stone_selected = False
 
+
         # Return 3 values: bool indicating whether a stone is already selected, current player, and boolean indicating the end of the game. 
         return stone_selected, curr_player, end()
-
     
 
     def draw_txt(end = False):
