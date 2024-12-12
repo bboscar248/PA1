@@ -130,8 +130,7 @@ def set_board_up(stones_per_player = 4):
         nonlocal curr_player, stone_selected, end, total_stones, stone_itself
 
         # Obtenemos las coordenadas de la piedra seleccionada
-        x = stone_itself[0]
-        y = stone_itself[1]
+        x, y = stone_itself
 
         # Nos aseguramos que las coordenadas seleccionados por el jugador estén dentro del rango del tablero
         if not(0 <= i < BSIZ and 0 <= j < BSIZ): 
