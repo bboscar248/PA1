@@ -37,9 +37,6 @@ def set_board_up(stones_per_player = 4):
     # Para saber si se ha seleccionado una piedra o no después de que los dos jugadores hayan movido todas sus piedras disponibles
     stone_selected = True
 
-    # Para saber si alguno de los jugadores ha ganado o no
-    end = False
-
     # El número total de piedras disponibles entre los dos jugadores 
     total_stones = stones_per_player * 2
 

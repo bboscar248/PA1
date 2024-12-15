@@ -64,25 +64,22 @@ def set_board_up(stones_per_player = 4):
         '''
         
         # Hacemos que la variable curr_player sea nonlocal
-        nonlocal curr_player, total_stones, stone_itself, stone_selected
+        nonlocal curr_player, total_stones, stone_itself
 
         # Jugador 1 
-        if curr_player == 0 and 0 <= i < BSIZ and 0 <= j < BSIZ: 
+        if curr_player == 0: 
             if board[i][j] == 'X': 
                 stone_itself = (i, j)
                 total_stones += 1
-                stone_selected = True
                 return True
             
             return False
 
         # Jugador 2
-        elif curr_player == 1 and 0 <= i < BSIZ and 0 <= j < BSIZ: 
+        elif curr_player == 1: 
             if board[i][j] == 'O':
                 stone_itself = (i, j)
                 total_stones += 1
-                stone_selected = True
-
                 return True
         
             return False
@@ -130,26 +127,24 @@ def set_board_up(stones_per_player = 4):
         nonlocal curr_player, stone_selected, end, total_stones, stone_itself
 
         # Obtenemos las coordenadas de la piedra seleccionada
-        x, y = stone_itself
+        x = stone_itself[0]
+        y = stone_itself[1]
 
         # Nos aseguramos que las coordenadas seleccionados por el jugador estén dentro del rango del tablero
         if not(0 <= i < BSIZ and 0 <= j < BSIZ): 
-            return True, curr_player, end()
+            return True, curr_player, end
         
         # Nos aseguramos que la casilla escogida esté vacía
-        if board[i][j] != " ": 
-            return True, curr_player, end()
+        if board[i][j] == " ": 
+            return True, curr_player, end
 
         # Si ninguno de los anteriores fueron ciertas, entonces, movemos la piedra del jugador a las coordenadas que haya concretado
         if stone_selected:  
 
-            # Vemos si ha seleccionado alguna piedra o no en la función select_st()
             if x != None and y != None: 
 
-                # Eliminamos la piedra seleccionada de la lista played_stones
+                # Eliminamos la piedra seleccionada 
                 played_stones.remove(Stone(x, y, PLAYER_COLOR[curr_player]))
-
-                board[x][y] = " "  
 
             # Si se trata del jugador 1
             if curr_player == 0: 
@@ -159,14 +154,14 @@ def set_board_up(stones_per_player = 4):
             elif curr_player == 1: 
                 board[i][j] = 'O'
 
-            # Añadimos la piedra jugada por el jugador 
-            played_stones.append(Stone(i, j, PLAYER_COLOR[curr_player]))
-
             # Cambiamos de jugador
             curr_player = 1 - curr_player
 
             # Restamos -1 a la variable 'total_stones' para saber las piedras aún disponibles
             total_stones -= 1
+
+            # Añadimos la piedra jugada por el jugador 
+            played_stones.append(Stone(i, j, PLAYER_COLOR[curr_player]))
 
             # Tenemos que ver que si las piedras disponibles es 0, que stone_selected = False
             if total_stones == 0: 
@@ -174,9 +169,9 @@ def set_board_up(stones_per_player = 4):
                 # Ya no hay más piedras que seleccionar
                 stone_selected = False
 
-
         # Return 3 values: bool indicating whether a stone is already selected, current player, and boolean indicating the end of the game. 
         return stone_selected, curr_player, end()
+
     
 
     def draw_txt(end = False):
