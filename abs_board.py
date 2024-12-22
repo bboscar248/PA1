@@ -235,6 +235,7 @@ def set_board_up(stones_per_player = 4):
 
             # Recorre cada columna de la fila actual
             for col in range(BSIZ): 
+                pass
 
                 # Si no es la última columna, imprime el contenido de la celda seguido de una barra vertical "|"
                 if col < BSIZ - 1: 
