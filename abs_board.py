@@ -87,7 +87,7 @@ def set_board_up(stones_per_player = 4):
                 # Retornamos True para reportar éxito
                 return True
             
-            # Retornamos False si la casilla seleccionada por el jugador no es una de sus piedras
+            # Retornamos False si la piedra seleccionada por el jugador no es una de sus piedras
             return False
 
         # Hacemos lo mismo que con el jugador 2 
@@ -168,15 +168,15 @@ def set_board_up(stones_per_player = 4):
 
         # Nos aseguramos que las coordenadas seleccionadas por el jugador estén dentro del rango del tablero
         if not(0 <= i < BSIZ and 0 <= j < BSIZ): 
-            print("No existe las coordenadas")
+            print("Las coordenadas que has introducido están mal.")
             return True, curr_player, end()
         
         # Nos aseguramos que la casilla escogida esté vacía
         if board[i][j] != " ": 
-            print("Ya está una ficha en esas coordenadas")
+            print("Ya hay una ficha en esas coordenadas")
             return True, curr_player, end()
 
-        # Si ninguno de las anteriores condiciones fueron ciertas, entonces, movemos la piedra del jugador 
+        # Si ninguna de las anteriores condiciones fueron ciertas, entonces, movemos la piedra del jugador 
         # actual a las coordenadas "i" y "j" que haya introducido
         if stone_selected:  
 
